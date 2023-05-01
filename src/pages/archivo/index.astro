@@ -1,0 +1,45 @@
+---
+import BaseHead from "../../components/BaseHead.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import { SITE_TITLE, SITE_DESCRIPTION } from "../../consts";
+import { getCollection } from "astro:content";
+import FormattedDate from "../../components/FormattedDate.astro";
+
+const posts = (await getCollection("archivo")).sort(
+  (a, b) => a.data.pubDate.valueOf() - b.data.pubDate.valueOf()
+);
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+    <style>
+    li a {
+      @apply text-cyan-500 underline-offset-4;
+      @apply tracking-wider;
+      @apply hover:underline focus:underline;
+    }
+    </style>
+  </head>
+  <body>
+    <Header />
+    <main class="container mx-auto py-10">
+      <section>
+        <ul>
+          {
+            posts.map((post) => (
+              <li>
+                <a href={`/archivo/${post.slug}/`}>{post.data.title}</a>
+                <span>por {post.data.author}</span>,
+                <FormattedDate date={post.data.pubDate} />
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+    </main>
+    <Footer />
+  </body>
+</html>
